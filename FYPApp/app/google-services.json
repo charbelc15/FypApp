@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "77246760472",
+    "project_id": "capstone1-341522",
+    "storage_bucket": "capstone1-341522.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77246760472:android:8c1e1a8c1552b9d369a56d",
+        "android_client_info": {
+          "package_name": "com.example.fypapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "77246760472-eshb63l0d8p1t5c633j9tom300gd6afm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fypapp",
+            "certificate_hash": "31af01c4f2f063395834eae4be4c94180597bf2c"
+          }
+        },
+        {
+          "client_id": "77246760472-k8settvlspc63dr3pq5rvpftg5g5c139.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4NoSZRHY_nxVkjLWtDJRmYXC5R3ZqoT8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "77246760472-k8settvlspc63dr3pq5rvpftg5g5c139.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
