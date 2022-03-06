@@ -17,9 +17,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.fypapp.directionhelpers.FetchURL;
 import com.example.fypapp.directionhelpers.TaskLoadedCallback;
+import com.example.fypapp.durationhelpers.GetDirectionsData;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,7 +46,7 @@ import java.util.List;
 
 
 //NOTE : WITH EMULATOR YOU HAVE TO SET THE LOCATION OF APP
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerDragListener {
 
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
@@ -69,6 +71,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Geocoder geocoder;
 
+    //for Duration between 2 points
+    private Button DurationBtn;
+    private TextView DurationText;
+    private TextView DistanceText;
+    private Object[] dataTransfer; //check this for error
+    private String url; ////check this for error
+    double latitude, longitude;
+    double end_latitude, end_longitude;
+    private static String travelFlag;
 
 
     @Override
@@ -140,6 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 new FetchURL(MapsActivity.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
+                travelFlag="driving";
             }
         });
 
@@ -148,6 +160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 new FetchURL(MapsActivity.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "walking"), "walking");
+                travelFlag="walking";
             }
         });
 
@@ -165,11 +178,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 mMap.clear();
+                counter=0;
             }
         });
 
 
         geocoder = new Geocoder(this);
+
+
+        //Duration between 2 points
+        //Transferring this activity's Google Map , Duration Text Field and Distance Text via Data Transfer to the GetDirectionsData class (which fills them using the data parser and google's duration API)
+        DurationBtn = findViewById(R.id.DurationBtn);
+        DurationText = findViewById(R.id.DurationText);
+        DistanceText = findViewById(R.id.DistanceText);
+
+        DurationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dataTransfer = new Object[5];
+                url = getDirectionsUrl();
+                GetDirectionsData getDirectionsData = new GetDirectionsData();
+                dataTransfer[0] = mMap;
+                dataTransfer[1] = url;
+                dataTransfer[2] = new LatLng(end_latitude, end_longitude);
+                dataTransfer[3] = DurationText;
+                dataTransfer[4] = DistanceText;
+
+                getDirectionsData.execute(dataTransfer);
+
+            }
+        });
+    }
+
+    private String getDirectionsUrl()
+    {
+        StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
+        latitude = place1.getPosition().latitude;
+        longitude = place1.getPosition().longitude;
+
+        end_latitude = place2.getPosition().latitude;
+        end_longitude = place2.getPosition().longitude;
+
+        googleDirectionsUrl.append("origin="+latitude+","+longitude);
+        googleDirectionsUrl.append("&destination="+end_latitude+","+end_longitude);
+        if(travelFlag=="driving" || travelFlag=="walking") {
+            googleDirectionsUrl.append("&mode=" + travelFlag);
+        }
+        googleDirectionsUrl.append("&key="+"AIzaSyCdA8rXLJ_48ckzOFaVmUHu5k1OqJYBVHw");
+
+        return googleDirectionsUrl.toString();
     }
 
     /**
@@ -185,11 +242,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-//         Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
 //        this deletes the marker by clicking on it
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -200,35 +252,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
-        //doesnt work cause we click on it to remove it
-//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//            @Override
-//            public void onMapClick(@NonNull LatLng latLng) {
-//                //Coordinates of click
-//                LatLng new_pos = new LatLng(latLng.latitude, latLng.longitude);
-//
-//                //Needs to be user-editable through an activity or pop up window
-//                String name = "name";
-//                String snippet = "snippet";
-//
-//                mMap.addMarker(new MarkerOptions()
-//                        .position(new_pos)
-//                        .title(name)
-//                        .snippet(snippet));
-//                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-//            }
-//        });
-
-
-        mMap.setOnMapLongClickListener(this);
+        mMap.setOnMapClickListener(this);
         mMap.setOnMarkerDragListener(this);
         Log.d("mylog", "Added Markers");
 
         pointToPosition(new LatLng(34.1157833994, 35.6743240356));
-
-
-
 
     }
 
@@ -256,46 +284,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onMapLongClick(@NonNull LatLng latLng) {
+    public void onMapClick(@NonNull LatLng latLng) {
         Log.d(TAG, "onMapLongClick: " + latLng.toString());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-            if (addresses.size() > 0) {
-                Address address = addresses.get(0);
-                Log.d(TAG, "onMapLongClick: " + latLng.toString());
-                Log.d(TAG, "counter: " + counter+1 );
-//                String streetAddress = address.getAddressLine(0);
-//                mMap.addMarker(new MarkerOptions()
-//                        .position(latLng)
-//                        .title(streetAddress)
-//                        .draggable(true)
-//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-//                );
+
                 counter++;
                 //counter is odd (1st/3rd/5th... press)
                 if(counter%2 !=0){
-//                    //this if statement just considers that we already have an *old place1 marker*, if so, make it invisible until it changes its location (2 lines later) : *new place 1 marker*
-//                    if(place1.getTitle()=="Start"){
-//                        place1.visible(false);
-//                    }
                     place1 = new MarkerOptions().position(latLng).title("Start").draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
                     Log.d(TAG, "onMapLongClick1: PLACE1 is set");
                     mMap.addMarker(place1);
                 }
                 //counter is even (2nd/4th/6th... press)
                 if(counter%2 ==0){
-//                    if(place2.getTitle()=="Start"){
-//                        place2.visible(false);
-//                    }
                     place2 = new MarkerOptions().position(latLng).title("Destination").draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
                     Log.d(TAG, "onMapLongClick1: PLACE2 is set");
                     mMap.addMarker(place2);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @Override
     public void onMarkerDrag(@NonNull Marker marker) {
@@ -306,15 +312,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMarkerDragEnd(@NonNull Marker marker) {
         Log.d(TAG, "onMarkerDragEnd: ");
         LatLng latLng = marker.getPosition();
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-            if (addresses.size() > 0) {
-                Address address = addresses.get(0);
-                String streetAddress = address.getAddressLine(0);
-                marker.setTitle(streetAddress);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(counter%2 !=0){
+            place1.position(latLng);
+        }
+        //counter is even (2nd/4th/6th... press)
+        if(counter%2 ==0){
+            place2.position(latLng);
         }
     }
 
