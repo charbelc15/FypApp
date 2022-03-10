@@ -4,9 +4,14 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -333,5 +338,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .zoom(20).build();
         //Zoom in and animate the camera.
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    private void Notify(LatLng position) {
+        String message = "This is a notification example";
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                MapsActivity.this
+        ).setSmallIcon(R.drawable.user_arrived)
+                .setContentTitle("User has Arrived")
+                .setContentText("Your user has arrived to their destination")
+                .setAutoCancel(true);
+
+        Intent intent = new Intent(MapsActivity.this, MapsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        // IF I WANT TO SEND A MESSAGE TO NEW ACTIVITY
+        intent.putExtra("message", message);
+        // in the activity just use
+        //String message = getIntent().getStringExtra("message);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(MapsActivity.this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(
+                Context.NOTIFICATION_SERVICE
+        );
+        notificationManager.notify(0,builder.build());
     }
 }

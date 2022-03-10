@@ -9,14 +9,27 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.SeekBar;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-public class UserActivity extends AppCompatActivity {
+import java.util.Arrays;
+import java.util.Locale;
+
+public class UserActivity extends AppCompatActivity implements TextToSpeech.OnInitListener{
 
     private DatabaseReference databaseReference;
     private LocationListener locationListener;
@@ -25,6 +38,12 @@ public class UserActivity extends AppCompatActivity {
     private final long MIN_DIST = 5;
     private EditText editTextLatitude;
     private EditText editTextLongitude;
+
+
+    //Text to Speech Part
+    private TextToSpeech mTTS;
+    private SeekBar mSeekBarPitch;
+    private SeekBar mSeekBarSpeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +93,32 @@ public class UserActivity extends AppCompatActivity {
         catch (Exception e){
             e.printStackTrace();
         }
+
+
+
+        //Text To Speech part
+        mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    int result = mTTS.setLanguage(Locale.ENGLISH);
+
+                    if (result == TextToSpeech.LANG_MISSING_DATA
+                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Log.e("TTS", "Language not supported");
+                    }
+                } else {
+                    Log.e("TTS", "Initialization failed");
+                }
+            }
+        });
+
+        mSeekBarPitch = findViewById(R.id.PitchBar);
+        mSeekBarSpeed = findViewById(R.id.SpeedBar);
+
+        //implement on Data Change of TextFlag to automatically say the string
+        speak();
+
     }
 
     // getting lat / long from text fields + pushing child infos (latitude, longitude) to the Location Node of the DB
@@ -83,6 +128,101 @@ public class UserActivity extends AppCompatActivity {
         databaseReference.child("latitude").push().setValue(editTextLatitude.getText().toString());
         databaseReference.child("longitude").push().setValue(editTextLongitude.getText().toString());
 
+    }
 
+
+    //For Text to Speech
+    private void speak() {
+
+        //just to be said first time on create
+        final String[] text = {"Hello I am your assistant for today"}; //replace by data got from DB
+        mTTS.speak(text[0],TextToSpeech.QUEUE_FLUSH,null, null);
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("Location");
+
+
+        //  To be said everytime TextFlag value changes
+
+        //!!!!!!!!!!ON DATA CHANGE OF CHILD NODE TEXT FLAG ONLY
+        // to not affect long and latitude
+        databaseReference.child("TextFlag").addValueEventListener(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            //show it on the map after data has changed from DB Side + move camera to marker
+            try {
+                String textFlag = snapshot.getValue().toString();
+                Log.d("mylog", textFlag);
+
+                switch(textFlag) {
+                    case "1":
+                        text[0] = "Object in front of you";
+                        break;
+                    case "2":
+                        text[0] = "Object to your left";
+                        break;
+                    case "3":
+                        text[0] = "Object to your right";
+                        break;
+                    default:
+                        text[0] = "No objects";
+                }
+
+
+                //Pitch and Speed Controlled by the Bars
+                float pitch = (float) mSeekBarPitch.getProgress() / 50;
+                if (pitch < 0.1) pitch = 0.1f;
+                float speed = (float) mSeekBarSpeed.getProgress() / 50;
+                if (speed < 0.1) speed = 0.1f;
+
+                mTTS.setPitch(pitch);
+                mTTS.setSpeechRate(speed);
+
+                //same command but for different device versions
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Log.d("mylog1", text[0]);
+                    mTTS.speak(text[0], TextToSpeech.QUEUE_FLUSH, null, null);
+                }
+                else {
+                    mTTS.speak(text[0], TextToSpeech.QUEUE_FLUSH, null);
+                }
+
+                Log.d("mylog2", text[0]);
+                mTTS.speak(text[0],TextToSpeech.QUEUE_FLUSH,null, null);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+    //Text  to Speech : on exit : destroy engine
+    @Override
+    protected void onDestroy() {
+        if (mTTS != null) {
+            mTTS.stop();
+            mTTS.shutdown();
+        }
+
+        super.onDestroy();
+    }
+
+    //Text to Speech : On create : initialize engine with these configrations
+    @Override
+    public void onInit(int i) {
+
+
+        if (i == TextToSpeech.SUCCESS) {
+            //Setting speech Language
+            mTTS.setLanguage(Locale.ENGLISH);
+            mTTS.setPitch(1);
+        }
     }
 }

@@ -1,24 +1,14 @@
 package com.example.fypapp.durationhelpers;
 
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.fypapp.directionhelpers.DataParser;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 //import com.google.maps.android.PolyUtil;
-import java.awt.font.TextAttribute;
 import java.io.IOException;
-import java.nio.DoubleBuffer;
 import java.util.HashMap;
-import java.util.List;
 
 
 public class GetDirectionsData extends AsyncTask<Object,String,String> {
@@ -59,41 +49,20 @@ public class GetDirectionsData extends AsyncTask<Object,String,String> {
         directionsList = parser.parseDirections(s);
         duration = directionsList.get("duration");
         distance = directionsList.get("distance");
+
+        //For more precise values
+        String stripedValue = (duration.replaceAll("[\\s+a-zA-Z :]",""));
+        double dbl = Double.parseDouble(stripedValue);
+        double duration_fixed = dbl*2.5;
+
+        String stripedValue2 = (duration.replaceAll("[\\s+a-zA-Z :]",""));
+        double dbl2 = Double.parseDouble(stripedValue2);
+        double distance_fixed = dbl2;
+
         Log.d("mylog", "woslit lahon");
-        DurationText.setText(duration);
-        DistanceText.setText(distance);
+        DurationText.setText(duration_fixed + " Km");
+        DistanceText.setText(distance_fixed + " Minutes");
 
     }
-
-//    @Override
-//    protected void onPostExecute(String s) {
-//
-//        String[] directionsList;
-//        DataParser2 parser = new DataParser2();
-//        directionsList = parser.parseDirections(s);
-//        displayDirection(directionsList);
-//
-//    }
-
-//    public void displayDirection(String[] directionsList)
-//    {
-//
-//        int count = directionsList.length;
-//        for(int i = 0;i<count;i++)
-//        {
-//            PolylineOptions options = new PolylineOptions();
-//            options.color(Color.RED);
-//            options.width(10);
-//            options.addAll(PolyUtil.decode(directionsList[i]));
-//
-//            mMap.addPolyline(options);
-//        }
-//    }
-
-
-
-
-
-
 }
 
