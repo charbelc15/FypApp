@@ -341,6 +341,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void Notify(LatLng position) {
+        // add if (arrived)         or      If(late)
         String message = "This is a notification example";
         NotificationCompat.Builder builder = new NotificationCompat.Builder(
                 MapsActivity.this

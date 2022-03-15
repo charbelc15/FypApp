@@ -56,7 +56,10 @@ public class UserActivity extends AppCompatActivity implements TextToSpeech.OnIn
         editTextLatitude = findViewById(R.id.editTextTextPersonName);
         editTextLongitude = findViewById(R.id.editTextTextPersonName2);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Location");
+        //Getting the name after user registry to input as Database root  !!!!! THE METHOD createUserWithEmailAndPassword of Firebase already checks if I have multiple users with same email so MIX doesnt happen
+        Bundle extras = getIntent().getExtras(); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        String root = extras.getString("userEmail");
+        databaseReference = FirebaseDatabase.getInstance().getReference(root);
 
         //updates Text field and DB automatically (input: GPS location ,, destination:user TF / Firebase DB / admin TF)
         locationListener = new LocationListener() {
@@ -117,7 +120,7 @@ public class UserActivity extends AppCompatActivity implements TextToSpeech.OnIn
         mSeekBarSpeed = findViewById(R.id.SpeedBar);
 
         //implement on Data Change of TextFlag to automatically say the string
-        speak();
+        speak(root);  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     }
 
@@ -132,13 +135,13 @@ public class UserActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
 
     //For Text to Speech
-    private void speak() {
+    private void speak(String username) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         //just to be said first time on create
         final String[] text = {"Hello I am your assistant for today"}; //replace by data got from DB
         mTTS.speak(text[0],TextToSpeech.QUEUE_FLUSH,null, null);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Location");
+        databaseReference = FirebaseDatabase.getInstance().getReference(username); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
         //  To be said everytime TextFlag value changes
