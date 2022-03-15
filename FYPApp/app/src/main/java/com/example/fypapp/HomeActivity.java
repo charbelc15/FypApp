@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Map;
 
@@ -18,6 +19,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public FloatingActionButton logout_Btn;
     public TextView DisplayName;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +37,10 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        // extra sent to this activity from LogInActivity with the user's display name
-        Bundle extras = getIntent().getExtras();
-        String userEmail = extras.getString("username");
-        String userDisplayName = userEmail.substring( 0, userEmail.indexOf("@")); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // from LogInActivity (Regsiter Fragment/LogInFragment) with the user's display name
+
+        String userEmail = Signer.INSTANCE.getUsername();
+        String userDisplayName = userEmail.substring( 0, userEmail.indexOf("@"));
         DisplayName = findViewById(R.id.DisplayName);
         DisplayName.append(userDisplayName + "!");
 
@@ -49,7 +51,7 @@ public class HomeActivity extends AppCompatActivity {
         userBtn.setOnClickListener( v ->
         {
             Intent intent = new Intent( HomeActivity.this , UserActivity.class );
-            intent.putExtra("userEmail", userEmail); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //intent.putExtra("userEmail", userEmail); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             startActivity(intent);
         });
 

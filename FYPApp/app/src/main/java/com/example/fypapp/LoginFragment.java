@@ -171,6 +171,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
+                    Signer.INSTANCE.setUsername(username.getText().toString());
                     Toast.makeText(getContext(),"Sign In successfull",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getContext(), HomeActivity.class);
                     startActivity(intent);

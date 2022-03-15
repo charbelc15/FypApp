@@ -20,6 +20,8 @@ import android.widget.SeekBar;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,6 +47,8 @@ public class UserActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private SeekBar mSeekBarPitch;
     private SeekBar mSeekBarSpeed;
 
+    //for root of DB
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,9 +60,12 @@ public class UserActivity extends AppCompatActivity implements TextToSpeech.OnIn
         editTextLatitude = findViewById(R.id.editTextTextPersonName);
         editTextLongitude = findViewById(R.id.editTextTextPersonName2);
 
-        //Getting the name after user registry to input as Database root  !!!!! THE METHOD createUserWithEmailAndPassword of Firebase already checks if I have multiple users with same email so MIX doesnt happen
-        Bundle extras = getIntent().getExtras(); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        String root = extras.getString("userEmail");
+
+
+        // Getting the name at user registry to input as Database root  !!!!! THE METHOD createUserWithEmailAndPassword of Firebase already checks if I have multiple users with same email so MIX doesnt happen
+
+        String userEmail = Signer.INSTANCE.getUsername();
+        String root = userEmail.substring( 0, userEmail.indexOf("@"));
         databaseReference = FirebaseDatabase.getInstance().getReference(root);
 
         //updates Text field and DB automatically (input: GPS location ,, destination:user TF / Firebase DB / admin TF)

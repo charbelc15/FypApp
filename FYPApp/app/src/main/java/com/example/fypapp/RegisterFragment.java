@@ -103,7 +103,6 @@ public class RegisterFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
-        try {
 
             mAuth = FirebaseAuth.getInstance();
 
@@ -137,9 +136,7 @@ public class RegisterFragment extends Fragment {
             });
 
 
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+
 
 
 
@@ -207,6 +204,7 @@ public class RegisterFragment extends Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(getContext(),"Registration successfull",Toast.LENGTH_SHORT).show();
+                    Signer.INSTANCE.setUsername(username.getText().toString());
                     Intent intent = new Intent(getContext(), HomeActivity.class);
                     startActivity(intent);
                 }else{

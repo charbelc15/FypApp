@@ -105,7 +105,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         editTextLatitude = findViewById(R.id.editTextTextPersonName);
         editTextLongitude = findViewById(R.id.editTextTextPersonName2);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Location");
+        String userEmail = Signer.INSTANCE.getUsername();
+        String root = userEmail.substring( 0, userEmail.indexOf("@"));
+        databaseReference = FirebaseDatabase.getInstance().getReference(root);
+
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -7,8 +7,7 @@ public final class Signer {
 
     public final static Signer INSTANCE = new Signer();
 
-    private Signer(){
-
+    public Signer(){
     }
 
     public String getUsername() {
