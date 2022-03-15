@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@drawable/background"
     tools:context=".HomeActivity">
 
     <ImageButton
@@ -12,7 +12,7 @@
         android:layout_width="108dp"
         android:layout_height="115dp"
         android:adjustViewBounds="true"
-        android:backgroundTint="#FFFFFF"
+        android:backgroundTint="#72C31F"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,6 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="User"
+        android:textColor="#04E885"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/textView3"
         app:layout_constraintHorizontal_bias="0.421"
@@ -39,7 +40,7 @@
         android:layout_width="105dp"
         android:layout_height="117dp"
         android:adjustViewBounds="true"
-        android:backgroundTint="#FFFFFF"
+        android:backgroundTint="#23CFCF"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/admin"
@@ -54,6 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Caretaker"
+        android:textColor="#FFEB3B"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.74"
@@ -66,12 +68,38 @@
         android:layout_width="277dp"
         android:layout_height="34dp"
         android:fontFamily="serif"
-        android:text="Hello, please specify your role"
+        android:text="please specify your role"
+        android:textColor="#F6F6F6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.44"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.117" />
+        app:layout_constraintVertical_bias="0.117"
+        tools:fontFamily="serif" />
+
+    <TextView
+        android:id="@+id/DisplayName"
+        android:layout_width="277dp"
+        android:layout_height="34dp"
+        android:fontFamily="serif"
+        android:text="Hello, "
+        android:textColor="#EFEDED"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.44"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.068"
+        tools:fontFamily="serif" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/logout_btn"
+        android:layout_width="54dp"
+        android:layout_height="65dp"
+        android:clickable="true"
+        app:srcCompat="@drawable/logout"
+        tools:layout_editor_absoluteX="178dp"
+        tools:layout_editor_absoluteY="417dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
