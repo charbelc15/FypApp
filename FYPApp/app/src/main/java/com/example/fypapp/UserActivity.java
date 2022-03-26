@@ -165,13 +165,67 @@ public class UserActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
                 switch(textFlag) {
                     case "1":
-                        text[0] = "Object in front of you";
+                        text[0] = "1 near range object to the left";
                         break;
                     case "2":
-                        text[0] = "Object to your left";
+                        text[0] = "1 near range object in front";
                         break;
                     case "3":
-                        text[0] = "Object to your right";
+                        text[0] = "1 near range object to the right";
+                        break;
+                    case "4":
+                        text[0] = "1 medium range object to the left";
+                        break;
+                    case "5":
+                        text[0] = "1 medium range object in front";
+                        break;
+                    case "6":
+                        text[0] = "1 medium range object to the right";
+                        break;
+                    case "7":
+                        text[0] = "1 far range object to the left";
+                        break;
+                    case "8":
+                        text[0] = "1 far range object in front";
+                        break;
+                    case "9":
+                        text[0] = "1 far range object to the right";
+                        break;
+                    case "10":
+                        text[0] = "2 near range objects to the front and right";
+                        break;
+                    case "11":
+                        text[0] = "2 medium range objects to the front and right";
+                        break;
+                    case "12":
+                        text[0] = "2 far range objects to the front and right";
+                        break;
+                    case "13":
+                        text[0] = "2 near range objects to the left and right";
+                        break;
+                    case "14":
+                        text[0] = "2 medium range objects to the left and right";
+                        break;
+                    case "15":
+                        text[0] = "2 far range objects to the left and right";
+                        break;
+                    case "16":
+                        text[0] = "2 near range objects to the left and front";
+                        break;
+                    case "17":
+                        text[0] = "2 medium range objects to the left and front";
+                        break;
+                    case "18":
+                        text[0] = "2 far range objects to the left and front";
+                        break;
+                    case "19":
+                        text[0] = "many objects in near range";
+                        break;
+                    case "20":
+                        text[0] = "many objects in medium range";
+                        break;
+                    case "21":
+                        text[0] = "many objects in far range";
                         break;
                     default:
                         text[0] = "No objects";

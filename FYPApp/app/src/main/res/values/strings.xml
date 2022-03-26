@@ -6,4 +6,5 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
+    <string name="title_activity_admin_maps">Admin_MapsActivity</string>
 </resources>

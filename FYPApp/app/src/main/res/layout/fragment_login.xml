@@ -47,9 +47,9 @@
                 ads:boxBackgroundColor="#F8E9FD">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/login_username"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/login_username"/>
+                    android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -62,9 +62,9 @@
                 ads:boxBackgroundColor="#F8E9FD">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/login_password"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/login_password"/>
+                    android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <RelativeLayout
@@ -106,6 +106,22 @@
                     android:textColor="#26A9AC"
                     android:textSize="15sp" />
 
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="206dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="36dp">
+
+                <CheckBox
+                    android:id="@+id/admin_check"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="0dp"
+                    android:checked="false"
+                    android:text="If you are an association admin check here"
+                    android:textColor="#FF0000" />
             </RelativeLayout>
 
 

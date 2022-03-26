@@ -37,6 +37,8 @@ public class LogInActivity extends AppCompatActivity{
 
         if(currentUser != null){
             //user is still logged in --> GO TO Home Page
+            String username = currentUser.getEmail();
+            Signer.INSTANCE.setUsername(username);
             Intent intent = new Intent(this, HomeActivity.class);
             //intent.putExtra("username", currentUser.getEmail());
             Log.d("STATUS still logged in ", currentUser.getEmail());

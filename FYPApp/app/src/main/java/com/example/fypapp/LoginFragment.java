@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -75,6 +76,7 @@ public class LoginFragment extends Fragment {
     private EditText password;
     private MaterialButton login_Btn;
     private FirebaseAuth mAuth;
+    private CheckBox admin_checkBox;
 
 
     @Override
@@ -91,12 +93,16 @@ public class LoginFragment extends Fragment {
 
             username = view.findViewById(R.id.login_username);
             password = view.findViewById(R.id.login_password);
+            admin_checkBox = view.findViewById(R.id.admin_check);
 
             login_Btn = view.findViewById(R.id.login);
             login_Btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    validateEmptyForm();    //VALIDATES AND SIGNS IN
+
+                    Boolean isAdmin = admin_checkBox.isChecked();
+                    Log.d("isadmin???????????? ", String.valueOf(isAdmin));
+                    validateEmptyForm(isAdmin);    //VALIDATES AND SIGNS IN
                 }
             });
 
@@ -121,7 +127,7 @@ public class LoginFragment extends Fragment {
     }
 
         //VALIDATES AND SIGNS IN
-        private void validateEmptyForm(){
+        private void validateEmptyForm(Boolean isAdmin){
             // VALIDATES
             // if they are empty --> ERROR + ICON
             // if email not valid + if password less than 3 characters + if inputs are different
@@ -149,7 +155,7 @@ public class LoginFragment extends Fragment {
                 if(username_text.matches("^(.+)@(.+)$")){
                     if(password_text.length()>=3){
 
-                          firebaseSignIn();
+                          firebaseSignIn(isAdmin);
 
                     }
                     else{
@@ -163,7 +169,7 @@ public class LoginFragment extends Fragment {
             }
         }
     //SIGNS IN AFTER VALIDATION
-    public void firebaseSignIn(){
+    public void firebaseSignIn(Boolean isAdmin){
         //For Firebase auth
         login_Btn.setEnabled(false);
         login_Btn.setAlpha(0.5f);
@@ -173,8 +179,14 @@ public class LoginFragment extends Fragment {
                 if(task.isSuccessful()){
                     Signer.INSTANCE.setUsername(username.getText().toString());
                     Toast.makeText(getContext(),"Sign In successfull",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getContext(), HomeActivity.class);
-                    startActivity(intent);
+                    if(isAdmin){
+                        Intent intent = new Intent(getContext(), Admin_MapsActivity.class);
+                        startActivity(intent);
+                    }
+                    else{
+                        Intent intent = new Intent(getContext(), HomeActivity.class);
+                        startActivity(intent);
+                    }
                 }else{
                     login_Btn.setEnabled(true);
                     login_Btn.setAlpha(1.0f);

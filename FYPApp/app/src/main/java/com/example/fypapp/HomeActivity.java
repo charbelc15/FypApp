@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -38,11 +39,15 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // from LogInActivity (Regsiter Fragment/LogInFragment) with the user's display name
+        try {
+            String userEmail = Signer.INSTANCE.getUsername();
+            String userDisplayName = userEmail.substring( 0, userEmail.indexOf("@"));
+            DisplayName = findViewById(R.id.DisplayName);
+            DisplayName.append(userDisplayName + "!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        String userEmail = Signer.INSTANCE.getUsername();
-        String userDisplayName = userEmail.substring( 0, userEmail.indexOf("@"));
-        DisplayName = findViewById(R.id.DisplayName);
-        DisplayName.append(userDisplayName + "!");
 
 
 
